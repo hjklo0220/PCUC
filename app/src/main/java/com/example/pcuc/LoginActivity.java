@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences setting,setting2;
     SharedPreferences.Editor editor,editor2;
 
-    //하드코딩--------------
+    //하드코딩--------------tldlqkf toRldi
     String admin_id = "admin";
     String admin_pw = "1234";
 
