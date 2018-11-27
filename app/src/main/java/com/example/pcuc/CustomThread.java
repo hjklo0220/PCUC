@@ -34,6 +34,7 @@ public class CustomThread extends Thread{
         catch (Throwable throwable) {
             output = "";
             Log.d("Response","Throw catch");
+            throwable.printStackTrace();
         }
     }
 

@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences setting,setting2;
     SharedPreferences.Editor editor,editor2;
 
-    //하드코딩--------------tldlqkf toRldi
+    //하드코딩--------------
     //String admin_id = "admin";
     //String admin_pw = "1234";
 
@@ -200,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (InterruptedException ignored) {
         }
         String result = thread2.Getresult();
-        boolean login_result = result == ""? false :true;
+        boolean login_result = result == "" ? false : true;
         String message = login_result? "로그인 성공":"ID 또는 비밀번호를 확인해 주세요.";
         thread2.interrupt();
         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
