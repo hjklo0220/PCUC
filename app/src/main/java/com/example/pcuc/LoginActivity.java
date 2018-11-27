@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -11,7 +12,16 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -19,8 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences.Editor editor,editor2;
 
     //하드코딩--------------tldlqkf toRldi
-    String admin_id = "admin";
-    String admin_pw = "1234";
+    //String admin_id = "admin";
+    //String admin_pw = "1234";
 
     //로그인 버튼 선언
     Button button_login;
@@ -78,6 +88,8 @@ public class LoginActivity extends AppCompatActivity {
                 //버튼 눌렀을 때 인텐트
                 if(loginValidation(login_ID,login_PW)) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+
 
                     startActivity(intent);
                 }
@@ -177,20 +189,40 @@ public class LoginActivity extends AppCompatActivity {
     //로그인 확인
     private boolean loginValidation(String id, String pw){
 
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("name", id);
+        paramMap.put("country",pw);
+        CustomThread thread2 = new CustomThread(paramMap, "login.php");
+
+        thread2.start();
+        try {
+            thread2.join();
+        } catch (InterruptedException ignored) {
+        }
+        String result = thread2.Getresult();
+        boolean login_result = result == ""? false :true;
+        String message = login_result? "로그인 성공":"ID 또는 비밀번호를 확인해 주세요.";
+        thread2.interrupt();
+        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+        return login_result;
+        /*
+        if(login_result) {
+
+        }
+        else
+            Toast.makeText(LoginActivity.this, , Toast.LENGTH_LONG).show();
 
 
         if(admin_id.equals(id) && admin_pw.equals(pw)){
-
             Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_LONG).show();
-
-            return true;
+           return true;
         }
 
         else{
             Toast.makeText(LoginActivity.this, "ID 또는 비밀번호를 확인해 주세요.", Toast.LENGTH_LONG).show();
 
             return false;
-        }
+        }*/
 
     }
 
