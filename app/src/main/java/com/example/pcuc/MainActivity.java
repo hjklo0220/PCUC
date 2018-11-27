@@ -1,5 +1,7 @@
 package com.example.pcuc;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -86,6 +88,23 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+
+        if(R.id.logout == id){
+
+
+            SharedPreferences getPre = getSharedPreferences("setting",MODE_PRIVATE);
+            SharedPreferences.Editor e_getPre = getPre.edit();
+            e_getPre.putBoolean("Auto_Login_enabled",false);
+            e_getPre.putString("PW","");
+            e_getPre.apply();
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+
+
+            finish();
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.password_modify) {

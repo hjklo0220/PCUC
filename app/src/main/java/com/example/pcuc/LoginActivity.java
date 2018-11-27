@@ -2,6 +2,7 @@ package com.example.pcuc;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import com.example.pcuc.Common.EncDec;
+import com.example.pcuc.Common.EncDec.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,10 +33,12 @@ import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    SharedPreferences setting,setting2;
-    SharedPreferences.Editor editor,editor2;
 
-    //하드코딩--------------
+
+    SharedPreferences setting;//,setting2;
+    SharedPreferences.Editor editor;//,editor2;
+
+    //하드코딩--------------tldlqkf toRldi
     //String admin_id = "admin";
     //String admin_pw = "1234";
 
@@ -49,12 +59,12 @@ public class LoginActivity extends AppCompatActivity {
         button_login = findViewById(R.id.loginButton);
 
         //자동 로그인 정보 저장
-        setting = getSharedPreferences("setting",0);
+        setting = getSharedPreferences("setting",MODE_PRIVATE);
         editor = setting.edit();
 
         // 아이디저장 정보 저장
-        setting2 = getSharedPreferences("setting2",0);
-        editor2 = setting2.edit();
+        //setting2 = getSharedPreferences("setting2",0);
+        // editor2 = setting2.edit();
 
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,9 +83,9 @@ public class LoginActivity extends AppCompatActivity {
                 if(id_save_checkBox.isChecked() && !auto_login_checkBox.isChecked()){
                     String ID_2 = idText.getText().toString();
 
-                    editor2.putString("ID",ID_2);
-                    editor2.putBoolean("ID_Check",true);
-                    editor2.apply();
+                    editor.putString("ID",ID_2);
+                    editor.putBoolean("ID_Check",true);
+                    editor.apply();
 
 
                 }
@@ -88,10 +98,12 @@ public class LoginActivity extends AppCompatActivity {
                 //버튼 눌렀을 때 인텐트
                 if(loginValidation(login_ID,login_PW)) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-
-
-
                     startActivity(intent);
+
+                    finish();
+
+
+
                 }
                 else {
                     Toast.makeText(LoginActivity.this, "ID 또는 비밀번호를 확인해 주세요.", Toast.LENGTH_LONG).show();
@@ -130,8 +142,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!isChecked){
 
-                    editor2.clear();
-                    editor2.commit();
+                    editor.clear();
+                    editor.commit();
 
                 }
 
@@ -165,6 +177,8 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 
                 startActivity(intent);
+
+                finish();
             }
             else {
                 Toast.makeText(LoginActivity.this, "ID 또는 비밀번호를 확인해 주세요.", Toast.LENGTH_LONG).show();
@@ -175,9 +189,9 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         //아이디 저장만 눌렀을 때 정보 불러오기
-        if(setting2.getBoolean("ID_Check", false)){
+        if(setting.getBoolean("ID_Check", false)){
 
-            idText.setText(setting2.getString("ID", ""));
+            idText.setText(setting.getString("ID", ""));
 
 
             id_save_checkBox.setChecked(true);
@@ -200,9 +214,14 @@ public class LoginActivity extends AppCompatActivity {
         } catch (InterruptedException ignored) {
         }
         String result = thread2.Getresult();
-        boolean login_result = result == "" ? false : true;
+        boolean login_result = !Objects.equals(result, "");
         String message = login_result? "로그인 성공":"ID 또는 비밀번호를 확인해 주세요.";
         thread2.interrupt();
+        String test_tag = "EncDec";
+        Log.d(test_tag,EncDec.hash("abc"));
+        String Enc_text = EncDec.Encrypt("abc");
+        Log.d(test_tag,Enc_text);
+        Log.d(test_tag,EncDec.Decrypt(Enc_text));
         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
         return login_result;
         /*
@@ -225,6 +244,8 @@ public class LoginActivity extends AppCompatActivity {
         }*/
 
     }
+
+
 
 }
 

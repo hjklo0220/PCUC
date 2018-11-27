@@ -5,4 +5,7 @@
         android:id="@+id/password_modify"
         android:title="PW수정" />
     <item android:title="내가 쓴 글" />
+    <item
+        android:id="@+id/logout"
+        android:title="로그아웃" />
 </menu>
