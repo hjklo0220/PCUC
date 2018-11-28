@@ -7,7 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,10 +22,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,40 +48,87 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        PagerAdapter pagerAdapter = new PagerAdapter(
+                getSupportFragmentManager()
+        );
+        viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(pagerAdapter);
+
+        TabLayout tab = findViewById(R.id.tabs);
+        tab.setupWithViewPager(viewPager);
+
+
     }
     //-------------
-    private TextView mTextMessage;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    public class PagerAdapter extends FragmentPagerAdapter {
+        private FragmentManager fm;
+        public PagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+            this.fm = fragmentManager;
+
+        }
+
 
         @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText("Home");
-                    return true;
-                case R.id.navigation_write:
-                    mTextMessage.setText("Write");
-                    return true;
-                case R.id.navigation_search:
-                    mTextMessage.setText("Search");
-                    return true;
-                case R.id.navigation_alarm:
-                    mTextMessage.setText("Alarm");
-                    return true;
+        public CharSequence getPageTitle(int position) {
+            switch (position){
+                case 0:
+                    return "홈";
+                case 1:
+                    return "작성";
+                case 2:
+                    return "검색";
+                case 3:
+                    return "알람";
+                default:
+                    return null;
             }
-            return false;
         }
-    };
+
+        @Override
+        public Fragment getItem(int position){
+            Fragment fragment = fm.findFragmentByTag("android:switcher:"+ viewPager .getId()+":"+getItemId((position)));
+            if(fragment!=null)
+                return fragment;
+            switch (position) {
+                case 0:
+                    return HomeFragment.newInstance();
+                case 1:
+                    return WriteFragment.newInstance();
+                case 2:
+                    return SearchFragment.newInstance();
+                case 3:
+                    return AlarmFragment.newInstance();
+                default:
+                    return null;
+            }
+        }
+
+
+
+        @Override
+        public int getCount(){
+            return 4;
+        }
+    }
+
+
+
+
+
+
     //--------------
+    private  long time = 0;
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+
+        if (System.currentTimeMillis() - time >= 2000) {
+            time = System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(), "뒤로 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
+        } else if(System.currentTimeMillis() - time < 2000){
+            finish();
         }
     }
 
