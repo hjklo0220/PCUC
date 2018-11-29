@@ -144,28 +144,37 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+
+        int curId = item.getItemId();
 
 
-        if(R.id.logout == id){
+        switch(curId){
+
+            case R.id.logout :
+
+                SharedPreferences getPre = getSharedPreferences("setting",MODE_PRIVATE);
+                SharedPreferences.Editor e_getPre = getPre.edit();
+                System.out.println("pw: "+getPre.getString("PW", ""));
+                e_getPre.putBoolean("Auto_Login_enabled",false);
+                e_getPre.putString("PW","");
+                e_getPre.apply();
+
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
 
 
-            SharedPreferences getPre = getSharedPreferences("setting",MODE_PRIVATE);
-            SharedPreferences.Editor e_getPre = getPre.edit();
-            e_getPre.putBoolean("Auto_Login_enabled",false);
-            e_getPre.putString("PW","");
-            e_getPre.apply();
-
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
+                finish();
+                break;
 
 
-            finish();
-        }
+            case R.id.password_modify:
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.password_modify) {
-            return true;
+                Intent pw_intent = new Intent(MainActivity.this, pw_change.class);
+                startActivity(pw_intent);
+
+                break;
+
+
         }
 
         return super.onOptionsItemSelected(item);

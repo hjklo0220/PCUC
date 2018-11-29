@@ -30,6 +30,7 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import com.example.pcuc.Common.*;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -165,9 +166,9 @@ public class LoginActivity extends AppCompatActivity {
         //다시 앱켰을때 정보 불러오고 자동로그인
         if(setting.getBoolean("Auto_Login_enabled", false)){
 
-            idText.setText(setting.getString("ID", ""));
+            //idText.setText(setting.getString("ID", ""));
 
-            passwordText.setText(setting.getString("PW", ""));
+            //passwordText.setText(setting.getString("PW", ""));
 
             auto_login_checkBox.setChecked(true);
             id_save_checkBox.setChecked(true);
