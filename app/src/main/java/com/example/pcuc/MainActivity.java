@@ -13,6 +13,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,17 +29,60 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //---------------------
+
+
+    //---------------------
+
+    private TabLayout tabLayout;
     private ViewPager viewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home_black_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_add_black_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_search_black_24dp));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_notifications_black_24dp));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+
+        viewPager = findViewById(R.id.viewpager);
+
+        TabPagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(pagerAdapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -49,74 +94,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        PagerAdapter pagerAdapter = new PagerAdapter(
-                getSupportFragmentManager()
-        );
-        viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
-
-        TabLayout tab = findViewById(R.id.tabs);
-        tab.setupWithViewPager(viewPager);
+        //--------------------------
 
 
+        //--------------------------
     }
     //-------------
-
-    public class PagerAdapter extends FragmentPagerAdapter {
-        private FragmentManager fm;
-        public PagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-            this.fm = fragmentManager;
-
-        }
-
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position){
-                case 0:
-                    return "홈";
-                case 1:
-                    return "작성";
-                case 2:
-                    return "검색";
-                case 3:
-                    return "알람";
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public Fragment getItem(int position){
-            Fragment fragment = fm.findFragmentByTag("android:switcher:"+ viewPager .getId()+":"+getItemId((position)));
-            if(fragment!=null)
-                return fragment;
-            switch (position) {
-                case 0:
-                    return HomeFragment.newInstance();
-                case 1:
-                    return WriteFragment.newInstance();
-                case 2:
-                    return SearchFragment.newInstance();
-                case 3:
-                    return AlarmFragment.newInstance();
-                default:
-                    return null;
-            }
-        }
-
-
-
-        @Override
-        public int getCount(){
-            return 4;
-        }
-    }
-
-
-
-
 
 
     //--------------
